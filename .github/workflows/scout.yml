@@ -20,6 +20,7 @@ jobs:
         run: |
           pip install google-genai playwright playwright-stealth python-telegram-bot
           playwright install chromium --with-deps
+
       - name: Run Spatial Scout
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
