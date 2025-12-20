@@ -8,17 +8,29 @@ jobs:
   run-scout:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install
+
+      - name: Install Dependencies
         run: |
-          pip install google-genai playwright playwright-stealth python-telegram-bot
+          pip install -r requirements.txt
           playwright install chromium --with-deps
-      - name: Run
+
+      - name: Run Spatial Scout
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python scout.py
+        - name: Commit and Push CSV changes
+        run: |
+          git config --global user.name "Spatial Scout Bot"
+          git config --global user.email "bot@spatialscout.com"
+          git add found_jobs.csv
+          git commit -m "Update job log [skip ci]" || echo "No changes to commit"
+          git push
