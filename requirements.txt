@@ -1,0 +1,4 @@
+google-genai
+playwright
+playwright-stealth
+python-telegram-bot
