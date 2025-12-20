@@ -8,32 +8,32 @@ jobs:
   run-scout:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 👈 Crucial for saving the CSV
+      contents: write
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Python Setup
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install Dependencies
+      - name: Dependencies
         run: |
           pip install google-genai playwright playwright-stealth python-telegram-bot
           playwright install chromium --with-deps
 
-      - name: Run Spatial Scout
+      - name: Run
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python scout.py
 
-      - name: Commit and Push CSV
+      - name: Sync CSV
         run: |
           git config --global user.name "Spatial Scout Bot"
           git config --global user.email "bot@spatialscout.com"
-          git add found_jobs.csv || echo "No CSV found yet"
-          git commit -m "Update job log [skip ci]" || echo "No changes to commit"
+          git add found_jobs.csv || echo "No CSV"
+          git commit -m "Update job log [skip ci]" || echo "No changes"
           git push
