@@ -8,11 +8,13 @@ jobs:
   run-scout:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Needed to push the CSV back to the repo
+      contents: write # 👈 Crucial for saving the CSV
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -28,10 +30,10 @@ jobs:
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python scout.py
 
-      - name: Commit and Push CSV changes
+      - name: Commit and Push CSV
         run: |
           git config --global user.name "Spatial Scout Bot"
           git config --global user.email "bot@spatialscout.com"
-          git add found_jobs.csv || echo "No CSV yet"
+          git add found_jobs.csv || echo "No CSV found yet"
           git commit -m "Update job log [skip ci]" || echo "No changes to commit"
           git push
