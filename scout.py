@@ -3,7 +3,7 @@ import csv
 import os
 from datetime import datetime
 from playwright.async_api import async_playwright
-from playwright_stealth import stealth
+from playwright_stealth import stealth_async # Fixed Import
 from telegram import Bot
 import config
 from brain import evaluate_job
@@ -34,7 +34,8 @@ async def run_scout():
         browser = await p.chromium.launch(headless=True)
         context = await browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0")
         page = await context.new_page()
-        stealth(page) # 2025 Standard Stealth
+        
+        await stealth_async(page) # Fixed Call
 
         all_tasks = [
             (config.TARGETS, "Standard Job"),
@@ -42,7 +43,6 @@ async def run_scout():
         ]
 
         for target_list, cat in all_tasks:
-            print(f"📂 Category: {cat}")
             for target in target_list:
                 print(f"📡 Scanning {target['name']}...")
                 try:

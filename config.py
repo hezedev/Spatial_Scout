@@ -16,7 +16,7 @@ PROFILE_SUMMARY = (
     "Constraint: STRICT 20h/week limit for Austria roles. Remote roles are unrestricted."
 )
 
-# Category 1: Standard Job Search Targets (Geospatial & Research)
+# Category 1: Main Jobs & Research Hubs
 TARGETS = [
     {'name': 'AIT (Students)', 'url': 'https://jobs.ait.ac.at/jobs?jobProfiles=Studierende'},
     {'name': 'TU Wien Jobs', 'url': 'https://tuwien.bewerberportal.at/Jobs'},
@@ -39,10 +39,9 @@ AI_INTERN_TARGETS = [
     {'name': 'Riegl (LiDAR/Photogrammetry)', 'url': 'http://www.riegl.com/about-riegl/careers/'}
 ]
 
-# News & Funding Signals
+# News Signals
 NEWS_TARGETS = [
     {'name': 'TU Wien News', 'url': 'https://www.tuwien.at/en/mg/geo/news'},
     {'name': 'FFG Horizon Europe', 'url': 'https://www.ffg.at/en/Europe/HorizonEurope'}
 ]
-
 SIGNAL_KEYWORDS = ['Funding', 'Awarded', 'Grant', 'WWTF', 'Partnership', 'Horizon Europe']

@@ -24,10 +24,9 @@ def evaluate_job(page_text):
             )
             return json.loads(response.text)
         except Exception as e:
-            error_msg = str(e)
-            if "429" in error_msg:
+            if "429" in str(e):
                 wait_time = 65
-                match = re.search(r"retry in (\d+\.\d+)s", error_msg)
+                match = re.search(r"retry in (\d+\.\d+)s", str(e))
                 if match:
                     wait_time = float(match.group(1)) + 5
                 print(f"🛑 Quota Hit. Hibernating {wait_time}s (Attempt {attempt+1}/5)...")
