@@ -3,7 +3,7 @@ import csv
 import os
 from datetime import datetime
 from playwright.async_api import async_playwright
-from playwright_stealth import stealth_async # Fixed Import
+from playwright_stealth import Stealth  # Updated for 2.0.0+
 from telegram import Bot
 import config
 from brain import evaluate_job
@@ -25,18 +25,20 @@ def log_to_csv(role, target_name, category):
 
 async def send_alert(role, url, category):
     bot = Bot(token=config.TELEGRAM_TOKEN)
-    msg = f"🎯 **{category} Signal!**\n\n**{role['title']}**\nScore: {role['score']}/10\nReason: {role['reason']}\n\n🔗 [Link]({url})"
+    msg = f"🎯 **{category} Signal!**\n\n**{role['title']}**\nScore: {role['score']}/10\n\n🔗 [Link]({url})"
     await bot.send_message(chat_id=config.CHAT_ID, text=msg, parse_mode="Markdown")
 
 async def run_scout():
-    async with async_playwright() as p:
-        print("🚀 Launching Spatial Scout Engine...")
+    # Use the new Stealth context manager for maximum reliability
+    async with Stealth().use_async(async_playwright()) as p:
+        print("🚀 Launching Spatial Scout Engine (v2025.12)...")
         browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0")
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"
+        )
         page = await context.new_page()
-        
-        await stealth_async(page) # Fixed Call
 
+        # Stealth is automatically applied to all pages in this context
         all_tasks = [
             (config.TARGETS, "Standard Job"),
             (config.AI_INTERN_TARGETS, "AI Internship")
@@ -53,7 +55,7 @@ async def run_scout():
                         if role.get("is_compliant") and role['score'] >= 7:
                             log_to_csv(role, target['name'], cat)
                             await send_alert(role, target['url'], cat)
-                    await asyncio.sleep(10)
+                    await asyncio.sleep(8) # Randomized-feel delay
                 except Exception as e:
                     print(f"❌ Site Error ({target['name']}): {e}")
         await browser.close()
