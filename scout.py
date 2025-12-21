@@ -3,7 +3,7 @@ import csv
 import os
 from datetime import datetime
 from playwright.async_api import async_playwright
-from playwright_stealth import Stealth  # Use the new Stealth class
+from playwright_stealth import Stealth  # <--- DIFFERENT: Importing the Class, not a function
 from telegram import Bot
 import config
 from brain import evaluate_job
@@ -29,18 +29,15 @@ async def send_alert(role, url, category):
     await bot.send_message(chat_id=config.CHAT_ID, text=msg, parse_mode="Markdown")
 
 async def run_scout():
-    # Use the new Stealth wrapper around the playwright engine
+    # DIFFERENT: We wrap the entire engine in the Stealth context manager
     async with Stealth().use_async(async_playwright()) as p:
-        print("🚀 Launching Spatial Scout Engine (v2.0.0 compatible)...")
+        print("🚀 Launching Spatial Scout Engine (v2025.12)...")
         browser = await p.chromium.launch(headless=True)
-        
-        # Standard context and page setup
         context = await browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0"
         )
         page = await context.new_page()
 
-        # Stealth is automatically active in this 'p' session
         all_tasks = [
             (config.TARGETS, "Standard Job"),
             (config.AI_INTERN_TARGETS, "AI Internship")
@@ -59,6 +56,8 @@ async def run_scout():
                             await send_alert(role, target['url'], cat)
                     await asyncio.sleep(10)
                 except Exception as e:
-                    print(f"❌ Error on {target['name']}: {e}")
-        
+                    print(f"❌ Site Error ({target['name']}): {e}")
         await browser.close()
+
+if __name__ == "__main__":
+    asyncio.run(run_scout())
